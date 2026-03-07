@@ -1,0 +1,126 @@
+import axios from "axios";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+const api = axios.create({
+  baseURL: API_BASE,
+  headers: { "Content-Type": "application/json" },
+});
+
+// Attach token to every request
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("sb_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
+// ✅ 401 interceptor — auth routes এ কাজ করবে না
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("sb_token");
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers["x-session-token"] = token;
+    }
+  }
+  return config;
+});
+export default api;
+
+// ─── Auth ────────────────────────────────────────────────
+export const authApi = {
+  register: async (data: {
+    name: string;
+    email: string;
+    password: string;
+    role: string;
+  }) => {
+    try {
+      const res = await api.post("/api/auth/sign-up/email", {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+      });
+      return res;
+    } catch (err: any) {
+      console.log("Register error:", err.response?.data);
+      throw err;
+    }
+  },
+
+  login: (data: { email: string; password: string }) =>
+    api.post("/api/auth/sign-in/email", {
+      email: data.email,
+      password: data.password,
+    }),
+
+  me: () => api.get("/api/auth/get-session"),
+};
+
+// ─── Tutors (Public) ─────────────────────────────────────
+export const tutorsApi = {
+  getAll: (params?: Record<string, unknown>) =>
+    api.get("/api/tutors", { params }),
+  // ✅ এটা /api/tutors/e0Hu20MP... তে call করবে
+  getById: (userId: string) => api.get(`/api/tutors/${userId}`),
+  getCategories: () => api.get("/api/admin/categories"),
+};
+
+// ─── Bookings ────────────────────────────────────────────
+export const bookingsApi = {
+  create: (data: { tutorId: string; availabilityId: string }) =>
+    api.post("/api/bookings", data),
+  getAll: (params?: Record<string, unknown>) =>
+    api.get("/api/bookings", { params }),
+  getById: (id: string) => api.get(`/api/bookings/${id}`),
+  cancel: (id: string) => api.patch(`/api/bookings/${id}/cancel`),
+  complete: (id: string) => api.patch(`/api/bookings/${id}/complete`),
+};
+
+// ─── Tutor Management ────────────────────────────────────
+export const tutorApi = {
+  getProfile: () => api.get("/api/tutors/profile"),
+  updateProfile: (data: Record<string, unknown>) =>
+    api.put("/api/tutors/profile", {
+      ...data,
+      hourlyRate: data.hourlyRate ? Number(data.hourlyRate) : undefined,
+    }),
+  getAvailability: () => api.get("/api/tutors/availability"),
+  updateAvailability: (data: unknown) =>
+    api.post("/api/tutors/availability", data),
+  getSessions: (params?: Record<string, unknown>) =>
+    api.get("/api/bookings", { params }),
+};
+
+// ─── Reviews ─────────────────────────────────────────────
+export const reviewsApi = {
+  create: (data: {
+    bookingId: string;
+    tutorId: string;
+    rating: number;
+    comment: string;
+  }) => api.post("/api/reviews", data),
+  // ✅ query param দিয়ে পাঠাও
+  getForTutor: (tutorId: string) => api.get(`/api/reviews?tutorId=${tutorId}`),
+};
+
+// ─── Admin ───────────────────────────────────────────────
+export const adminApi = {
+  getUsers: (params?: Record<string, unknown>) =>
+    api.get("/api/admin/users", { params }),
+  updateUserStatus: (id: string, data: { isActive: boolean }) =>
+    api.patch(`/api/admin/users/${id}`, data),
+  getBookings: (params?: Record<string, unknown>) =>
+    api.get("/api/admin/bookings", { params }),
+  getCategories: () => api.get("/api/categories"),
+  createCategory: (data: { name: string; description?: string }) =>
+    api.post("/api/categories", data),
+  updateCategory: (id: string, data: { name: string; description?: string }) =>
+    api.put(`/api/categories/${id}`, data),
+  deleteCategory: (id: string) => api.delete(`/api/categories/${id}`),
+  getStats: () => api.get("/api/admin/stats"),
+};
