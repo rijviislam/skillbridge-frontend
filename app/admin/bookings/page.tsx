@@ -30,7 +30,7 @@ export default function AdminBookingsPage() {
         const data = r.data?.data || r.data || [];
         const arr = Array.isArray(data) ? data : [];
         setBookings(arr);
-        setTotal(r.data?.total || arr.length); // ✅ এটা replace করো
+        setTotal(r.data?.total || arr.length);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -103,27 +103,22 @@ export default function AdminBookingsPage() {
                       key={b.id}
                       className="border-b border-slate-50 last:border-0 hover:bg-slate-50/50"
                     >
-                      {/* ✅ student directly আছে */}
                       <td className="px-4 py-3 text-sm font-body text-slate-700">
                         {b.student?.name || "—"}
                       </td>
-                      {/* ✅ tutor directly আছে — user nested না */}
                       <td className="px-4 py-3 text-sm font-body text-slate-700">
                         {b.tutor?.name || "—"}
                       </td>
-                      {/* ✅ subject নেই backend এ — availability date দেখাও */}
                       <td className="px-4 py-3 text-sm font-body text-slate-600">
                         {b.availability
                           ? formatDate(b.availability.startTime)
                           : "—"}
                       </td>
-                      {/* ✅ scheduledDate নেই — availability.startTime */}
                       <td className="px-4 py-3 text-sm font-body text-slate-500">
                         {b.availability
                           ? formatDate(b.availability.startTime)
                           : "—"}
                       </td>
-                      {/* ✅ time */}
                       <td className="px-4 py-3 text-xs font-body text-slate-500">
                         {b.availability ? (
                           <>
@@ -137,7 +132,6 @@ export default function AdminBookingsPage() {
                       <td className="px-4 py-3">
                         <StatusBadge status={b.status} />
                       </td>
-                      {/* ✅ totalPrice নেই — N/A */}
                       <td className="px-4 py-3 text-sm font-display font-semibold text-slate-900">
                         —
                       </td>

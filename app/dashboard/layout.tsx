@@ -37,10 +37,8 @@ export default function StudentDashboardLayout({
     if (!loading && !user) {
       router.replace("/auth/login");
     }
-    // ✅ role check সরিয়ে দিলাম — শুধু login check
   }, [user, loading, router]);
 
-  // ✅ loading এর সময় spinner দেখাও
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -49,7 +47,6 @@ export default function StudentDashboardLayout({
     );
   }
 
-  // ✅ user না থাকলে কিছু render করো না
   if (!user) return null;
 
   return (

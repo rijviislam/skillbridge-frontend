@@ -31,7 +31,6 @@ export default function BookingsPage() {
       .getAll()
       .then((r) => {
         console.log("bookings:", r.data);
-        // ✅ backend returns { upcoming: [], past: [] }
         const data = r.data?.data;
         let all = [];
         if (data?.upcoming || data?.past) {
@@ -97,7 +96,6 @@ export default function BookingsPage() {
     }
   };
 
-  // ✅ tutor name helper
   const getTutorName = (b: any) =>
     b.tutor?.name || b.tutor?.user?.name || "Tutor";
 
@@ -148,7 +146,6 @@ export default function BookingsPage() {
                     </h3>
                     <StatusBadge status={b.status} />
                   </div>
-                  {/* ✅ availability থেকে time দেখাও */}
                   <p className="text-xs text-slate-400 font-body mt-0.5">
                     {b.availability
                       ? `${formatDate(b.availability.startTime)} · ${formatTime(b.availability.startTime)} – ${formatTime(b.availability.endTime)}`
@@ -158,7 +155,6 @@ export default function BookingsPage() {
 
                 <div className="flex flex-col items-end gap-2">
                   <div className="flex gap-2">
-                    {/* ✅ CONFIRMED uppercase check */}
                     {b.status === "CONFIRMED" && (
                       <Button
                         variant="danger"
@@ -169,7 +165,6 @@ export default function BookingsPage() {
                         Cancel
                       </Button>
                     )}
-                    {/* ✅ COMPLETED uppercase check */}
                     {b.status === "COMPLETED" && !b.review && (
                       <Button
                         variant="outline"

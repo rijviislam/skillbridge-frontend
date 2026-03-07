@@ -27,7 +27,6 @@ export default function StudentDashboardPage() {
       .getAll({ limit: 10 })
       .then((r) => {
         console.log("bookings response:", r.data);
-        // ✅ array নিশ্চিত করো
         const data = r.data?.data || r.data?.bookings || r.data || [];
         setBookings(Array.isArray(data) ? data : []);
       })

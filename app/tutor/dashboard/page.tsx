@@ -155,7 +155,6 @@ export default function TutorDashboardPage() {
                       </div>
                     </td>
                     <td className="py-3 pr-4 text-sm font-body text-slate-600">
-                      {/* ✅ availability থেকে time */}
                       {s.availability ? (
                         <>
                           {formatDate(s.availability.startTime)}
@@ -173,7 +172,6 @@ export default function TutorDashboardPage() {
                       <StatusBadge status={s.status} />
                     </td>
                     <td className="py-3">
-                      {/* ✅ CONFIRMED uppercase */}
                       {s.status === "CONFIRMED" && (
                         <button
                           onClick={() => handleMarkComplete(s.id)}

@@ -83,8 +83,8 @@ export default function TutorProfilePage() {
     setSubmitting(true);
     try {
       await bookingsApi.create({
-        tutorId: tutor?.id, // ✅ tutorProfile.id
-        availabilityId: selectedSlot, // ✅ availability.id
+        tutorId: tutor?.id,
+        availabilityId: selectedSlot,
       });
       toast.success("Session booked successfully!");
       setBookingOpen(false);
@@ -117,7 +117,6 @@ export default function TutorProfilePage() {
       </div>
     );
 
-  // ✅ backend response normalize
   const name = tutor?.user?.name || tutor?.name || "Tutor";
   const bio = tutor?.bio || "";
   const education = tutor?.education || "";
