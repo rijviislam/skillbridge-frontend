@@ -172,7 +172,6 @@ function RegisterContent() {
     </div>
   );
 }
-
 export default function RegisterPage() {
   return (
     <Suspense fallback={null}>

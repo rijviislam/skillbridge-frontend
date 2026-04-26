@@ -274,7 +274,6 @@ function BrowseTutorsContent() {
     </div>
   );
 }
-
 export default function BrowseTutorsPage() {
   return (
     <Suspense
