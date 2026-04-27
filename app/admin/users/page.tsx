@@ -31,15 +31,20 @@ export default function AdminUsersPage() {
   useEffect(() => { load(); }, [search, roleFilter]);
 
   const toggleStatus = async (user: User) => {
-    setUpdating(user.id);
-    try {
-      await adminApi.updateUserStatus(user.id, { isActive: !user.isActive });
-      toast.success(`User ${user.isActive ? "banned" : "unbanned"} successfully`);
-      setUsers(prev => prev.map(u => u.id === user.id ? { ...u, isActive: !u.isActive } : u));
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Update failed");
-    } finally { setUpdating(null); }
-  };
+  setUpdating(user.id);
+  try {
+    const newStatus = user.status === "ACTIVE" ? "BANNED" : "ACTIVE";
+    await adminApi.updateUserStatus(user.id, { status: newStatus }); // ✅
+    toast.success(`User ${newStatus === "BANNED" ? "banned" : "unbanned"} successfully`);
+    setUsers(prev =>
+      prev.map(u => u.id === user.id ? { ...u, status: newStatus } : u)
+    );
+  } catch (err: any) {
+    toast.error(err.response?.data?.message || "Update failed");
+  } finally {
+    setUpdating(null);
+  }
+};
 
   const roleColor: Record<string, "default" | "info" | "warning"> = {
     student: "default",
@@ -111,23 +116,22 @@ export default function AdminUsersPage() {
                       <Badge variant={roleColor[u.role] || "default"} className="capitalize">{u.role}</Badge>
                     </td>
                     <td className="px-5 py-3.5">
-                      <StatusBadge status={u.isActive ? "active" : "banned"} />
+                     <StatusBadge status={u.status === "ACTIVE" ? "active" : "banned"} />
                     </td>
                     <td className="px-5 py-3.5 text-sm text-slate-500 font-body">{formatDate(u.createdAt)}</td>
                     <td className="px-5 py-3.5">
-                      <Button
-                        variant={u.isActive ? "danger" : "outline"}
-                        size="sm"
-                        loading={updating === u.id}
-                        onClick={() => toggleStatus(u)}
-                        className="gap-1.5"
-                      >
-                        {u.isActive ? (
-                          <><ShieldOff className="h-3.5 w-3.5" /> Ban</>
-                        ) : (
-                          <><ShieldCheck className="h-3.5 w-3.5" /> Unban</>
-                        )}
-                      </Button>
+                    <Button
+  variant={u.status === "ACTIVE" ? "danger" : "outline"}
+  size="sm"
+  loading={updating === u.id}
+  onClick={() => toggleStatus(u)}
+>
+  {u.status === "ACTIVE" ? (
+    <><ShieldOff className="h-3.5 w-3.5" /> Ban</>
+  ) : (
+    <><ShieldCheck className="h-3.5 w-3.5" /> Unban</>
+  )}
+</Button>
                     </td>
                   </tr>
                 ))}

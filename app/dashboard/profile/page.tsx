@@ -10,7 +10,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function StudentProfilePage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth(); 
   const [form, setForm] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -20,7 +20,8 @@ export default function StudentProfilePage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      await api.post("/api/auth/update-user", form);
+      await api.post("/api/auth/update-user", { name: form.name });
+      refreshUser(form.name); /
       toast.success("Profile updated!");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Update failed");
@@ -73,9 +74,10 @@ export default function StudentProfilePage() {
           <Input
             label="Email Address"
             type="email"
+            disabled
             value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
             icon={<Mail className="h-4 w-4" />}
+            className="opacity-60 cursor-not-allowed"
           />
         </div>
         <Button className="mt-5" loading={saving} onClick={handleSave}>

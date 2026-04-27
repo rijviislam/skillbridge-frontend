@@ -108,15 +108,16 @@ export const reviewsApi = {
 export const adminApi = {
   getUsers: (params?: Record<string, unknown>) =>
     api.get("/api/admin/users", { params }),
-  updateUserStatus: (id: string, data: { isActive: boolean }) =>
+  updateUserStatus: (id: string, data: { status: "ACTIVE" | "BANNED" }) =>
     api.patch(`/api/admin/users/${id}`, data),
   getBookings: (params?: Record<string, unknown>) =>
     api.get("/api/admin/bookings", { params }),
-  getCategories: () => api.get("/api/categories"),
+  getCategories: () => api.get("/api/admin/categories"),           
   createCategory: (data: { name: string; description?: string }) =>
-    api.post("/api/categories", data),
+    api.post("/api/admin/categories", data),                      
   updateCategory: (id: string, data: { name: string; description?: string }) =>
-    api.put(`/api/categories/${id}`, data),
-  deleteCategory: (id: string) => api.delete(`/api/categories/${id}`),
+    api.patch(`/api/admin/categories/${id}`, data),                
+  deleteCategory: (id: string) =>
+    api.delete(`/api/admin/categories/${id}`),                     
   getStats: () => api.get("/api/admin/stats"),
 };
