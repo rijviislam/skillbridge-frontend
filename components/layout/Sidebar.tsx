@@ -21,7 +21,7 @@ export default function Sidebar({ items }: SidebarProps) {
   const { user, logout } = useAuth();
 
   return (
-    <aside className="w-64 min-h-screen bg-slate-900 flex flex-col">
+    <aside className="w-64 min-h-screen bg-slate-900 flex flex-col ">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-slate-800">
         <Link href="/" className="flex items-center gap-2">
