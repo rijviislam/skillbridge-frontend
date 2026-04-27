@@ -43,29 +43,29 @@ export default function TutorProfilePage() {
   const [subject, setSubject] = useState("");
   const [notes, setNotes] = useState("");
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        // ✅ আলাদা আলাদা call করো — একটা fail করলে অন্যটা থামবে না
-        const tutorRes = await tutorsApi.getById(id);
-        const tutorData =
-          tutorRes.data?.tutor || tutorRes.data?.data || tutorRes.data;
-        setTutor(tutorData);
+useEffect(() => {
+  const load = async () => {
+    try {
+      const tutorRes = await tutorsApi.getById(id);
+      const tutorData =
+        tutorRes.data?.tutor || tutorRes.data?.data || tutorRes.data;
+      setTutor(tutorData);
 
-        try {
-          const reviewRes = await reviewsApi.getForTutor(tutorData?.id || id);
-          setReviews(reviewRes.data?.data || reviewRes.data || []);
-        } catch {
-          setReviews([]); // reviews না আসলেও page দেখাবে
-        }
-      } catch (err) {
-        toast.error("Failed to load tutor profile");
-      } finally {
-        setLoading(false);
+      try {
+        const reviewRes = await reviewsApi.getForTutor(tutorData?.userId || id);
+        const reviewList = reviewRes.data?.data || reviewRes.data || [];
+        setReviews(Array.isArray(reviewList) ? reviewList : []);
+      } catch {
+        setReviews([]);
       }
-    };
-    load();
-  }, [id]);
+    } catch (err) {
+      toast.error("Failed to load tutor profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+  load();
+}, [id]);
 
   const handleBook = async () => {
     if (!user) {

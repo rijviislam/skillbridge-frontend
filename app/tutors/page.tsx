@@ -10,7 +10,7 @@ import { tutorsApi } from "@/lib/api";
 import type { Category, TutorProfile } from "@/types";
 import { Search, SlidersHorizontal, Users, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 
 function BrowseTutorsContent() {
   const searchParams = useSearchParams();
@@ -22,6 +22,11 @@ function BrowseTutorsContent() {
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
+  // ✅ Separate search input state for debouncing
+  const [searchInput, setSearchInput] = useState(
+    searchParams.get("search") || "",
+  );
+
   const [filters, setFilters] = useState({
     search: searchParams.get("search") || "",
     categoryId: searchParams.get("categoryId") || "",
@@ -30,6 +35,18 @@ function BrowseTutorsContent() {
     minRating: "",
     sort: "rating",
   });
+
+  // ✅ Debounce search input — only update filters.search after 400ms of inactivity
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setFilters((f) => ({ ...f, search: value }));
+      setPage(1);
+    }, 400);
+  };
 
   const fetchTutors = useCallback(async () => {
     setLoading(true);
@@ -43,10 +60,18 @@ function BrowseTutorsContent() {
       if (filters.sort) params.sort = filters.sort;
 
       const res = await tutorsApi.getAll(params);
-      const data = res.data;
-      setTutors(data?.data || data || []);
-      setTotal(data?.total || 0);
+
+      const payload = res.data?.data;
+      const tutorList = Array.isArray(payload)
+        ? payload
+        : (payload?.data ?? []);
+      const totalCount = payload?.total ?? 0;
+
+      setTutors(tutorList);
+      setTotal(totalCount);
     } catch {
+      setTutors([]);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
@@ -63,6 +88,7 @@ function BrowseTutorsContent() {
   }, [fetchTutors]);
 
   const clearFilters = () => {
+    setSearchInput(""); // ✅ Also reset the visible input
     setFilters({
       search: "",
       categoryId: "",
@@ -99,12 +125,10 @@ function BrowseTutorsContent() {
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            {/* ✅ Use searchInput for display, handleSearchChange for debounced filter update */}
             <input
-              value={filters.search}
-              onChange={(e) => {
-                setFilters((f) => ({ ...f, search: e.target.value }));
-                setPage(1);
-              }}
+              value={searchInput}
+              onChange={handleSearchChange}
               placeholder="Search subjects, tutor names..."
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm font-body focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
@@ -191,7 +215,10 @@ function BrowseTutorsContent() {
               <span className="inline-flex items-center gap-1 bg-brand-50 text-brand-700 text-xs font-body px-2.5 py-1 rounded-full">
                 "{filters.search}"
                 <button
-                  onClick={() => setFilters((f) => ({ ...f, search: "" }))}
+                  onClick={() => {
+                    setSearchInput(""); // ✅ Clear visible input too
+                    setFilters((f) => ({ ...f, search: "" }));
+                  }}
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -234,7 +261,7 @@ function BrowseTutorsContent() {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {tutors.map((tutor, i) => (
+              {tutors?.map((tutor, i) => (
                 <div
                   key={tutor.id}
                   className="animate-fade-up"
@@ -274,6 +301,7 @@ function BrowseTutorsContent() {
     </div>
   );
 }
+
 export default function BrowseTutorsPage() {
   return (
     <Suspense

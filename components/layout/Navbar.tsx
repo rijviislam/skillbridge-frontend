@@ -1,13 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
 import { Avatar } from "@/components/ui";
 import Button from "@/components/ui/Button";
-import { BookOpen, Menu, X, ChevronDown, LogOut, User, LayoutDashboard } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
+import {
+  BookOpen,
+  ChevronDown,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  User,
+  X,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 export default function Navbar() {
   const { user, logout, isStudent, isTutor, isAdmin } = useAuth();
@@ -18,7 +26,8 @@ export default function Navbar() {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (dropRef.current && !dropRef.current.contains(e.target as Node)) setDropOpen(false);
+      if (dropRef.current && !dropRef.current.contains(e.target as Node))
+        setDropOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -31,7 +40,7 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { href: "/tutors", label: "Browse Tutors" },
+    { href: "/tutors", label: " Tutors" },
     { href: "/tutors?featured=true", label: "Featured" },
   ];
 
@@ -51,13 +60,15 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-6">
-            {navLinks.map(link => (
+            {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
                   "text-sm font-body font-medium transition-colors",
-                  pathname === link.href ? "text-brand-600" : "text-slate-600 hover:text-slate-900"
+                  pathname === link.href
+                    ? "text-brand-600"
+                    : "text-slate-600 hover:text-slate-900",
                 )}
               >
                 {link.label}
@@ -74,15 +85,26 @@ export default function Navbar() {
                   className="flex items-center gap-2 rounded-xl px-3 py-1.5 hover:bg-slate-50 transition-colors"
                 >
                   <Avatar name={user.name} size="sm" />
-                  <span className="text-sm font-medium font-body text-slate-700 max-w-[120px] truncate">{user.name}</span>
-                  <ChevronDown className={cn("h-4 w-4 text-slate-400 transition-transform", dropOpen && "rotate-180")} />
+                  <span className="text-sm font-medium font-body text-slate-700 max-w-[120px] truncate">
+                    {user.name}
+                  </span>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 text-slate-400 transition-transform",
+                      dropOpen && "rotate-180",
+                    )}
+                  />
                 </button>
 
                 {dropOpen && (
                   <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl border border-slate-100 shadow-card-hover py-1 animate-fade-up">
                     <div className="px-4 py-2.5 border-b border-slate-50">
-                      <p className="text-xs font-body text-slate-500 capitalize">{user.role}</p>
-                      <p className="text-sm font-medium font-body text-slate-800 truncate">{user.email}</p>
+                      <p className="text-xs font-body text-slate-500 capitalize">
+                        {user.role}
+                      </p>
+                      <p className="text-sm font-medium font-body text-slate-800 truncate">
+                        {user.email}
+                      </p>
                     </div>
                     <Link
                       href={getDashboardPath()}
@@ -112,7 +134,9 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/auth/login">
-                  <Button variant="ghost" size="sm">Log in</Button>
+                  <Button variant="ghost" size="sm">
+                    Log in
+                  </Button>
                 </Link>
                 <Link href="/auth/register">
                   <Button size="sm">Get Started</Button>
@@ -126,7 +150,11 @@ export default function Navbar() {
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100"
           >
-            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {menuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>
@@ -134,7 +162,7 @@ export default function Navbar() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden border-t border-slate-100 bg-white px-4 py-4 space-y-1 animate-fade-up">
-          {navLinks.map(link => (
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -147,14 +175,33 @@ export default function Navbar() {
           {user ? (
             <>
               <div className="pt-2 border-t border-slate-100">
-                <Link href={getDashboardPath()} onClick={() => setMenuOpen(false)} className="block px-3 py-2 text-sm font-body text-slate-700 hover:bg-slate-50 rounded-lg">Dashboard</Link>
-                <button onClick={logout} className="block w-full text-left px-3 py-2 text-sm font-body text-red-600 hover:bg-red-50 rounded-lg">Sign out</button>
+                <Link
+                  href={getDashboardPath()}
+                  onClick={() => setMenuOpen(false)}
+                  className="block px-3 py-2 text-sm font-body text-slate-700 hover:bg-slate-50 rounded-lg"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={logout}
+                  className="block w-full text-left px-3 py-2 text-sm font-body text-red-600 hover:bg-red-50 rounded-lg"
+                >
+                  Sign out
+                </button>
               </div>
             </>
           ) : (
             <div className="pt-2 border-t border-slate-100 flex gap-2">
-              <Link href="/auth/login" className="flex-1"><Button variant="ghost" size="sm" className="w-full">Log in</Button></Link>
-              <Link href="/auth/register" className="flex-1"><Button size="sm" className="w-full">Get Started</Button></Link>
+              <Link href="/auth/login" className="flex-1">
+                <Button variant="ghost" size="sm" className="w-full">
+                  Log in
+                </Button>
+              </Link>
+              <Link href="/auth/register" className="flex-1">
+                <Button size="sm" className="w-full">
+                  Get Started
+                </Button>
+              </Link>
             </div>
           )}
         </div>

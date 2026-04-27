@@ -5,25 +5,16 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 const api = axios.create({
   baseURL: API_BASE,
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 // Attach token to every request
+
 api.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("sb_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
-  return config;
-});
-
-// ✅ 401 interceptor — auth routes এ কাজ করবে না
-api.interceptors.request.use((config) => {
-  if (typeof window !== "undefined") {
-    const token = localStorage.getItem("sb_token");
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
       config.headers["x-session-token"] = token;
     }
   }
@@ -62,12 +53,18 @@ export const authApi = {
 };
 
 // ─── Tutors (Public) ─────────────────────────────────────
+// export const tutorsApi = {
+//   getAll: (params?: Record<string, unknown>) =>
+//     api.get("/api/tutors", { params }),
+//   getById: (userId: string) => api.get(`/api/tutors/${userId}`),
+//   getCategories: () => api.get("/api/admin/categories"),
+// };
+
 export const tutorsApi = {
   getAll: (params?: Record<string, unknown>) =>
     api.get("/api/tutors", { params }),
-  // ✅ এটা /api/tutors/e0Hu20MP... তে call করবে
   getById: (userId: string) => api.get(`/api/tutors/${userId}`),
-  getCategories: () => api.get("/api/admin/categories"),
+  getCategories: () => api.get("/api/admin/categories/public"),
 };
 
 // ─── Bookings ────────────────────────────────────────────
@@ -104,7 +101,6 @@ export const reviewsApi = {
     rating: number;
     comment: string;
   }) => api.post("/api/reviews", data),
-  // ✅ query param দিয়ে পাঠাও
   getForTutor: (tutorId: string) => api.get(`/api/reviews?tutorId=${tutorId}`),
 };
 
