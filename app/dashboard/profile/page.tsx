@@ -4,23 +4,35 @@ import { Avatar, Card } from "@/components/ui";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { useAuth } from "@/context/AuthContext";
-import api from "@/lib/api";
-import { Mail, Shield, User } from "lucide-react";
+import { userApi } from "@/lib/api";
+
+import { Image, Mail, Shield, User } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-
 export default function StudentProfilePage() {
   const { user } = useAuth();
   const [form, setForm] = useState({
     name: user?.name || "",
-    email: user?.email || "",
+    image: user?.image || "",
   });
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      await api.post("/api/auth/update-user", form);
+      const res = await userApi.updateProfile({
+        name: form.name,
+        image: form.image || undefined,
+      });
+
+      // ✅ localStorage এ updated user save করো
+      const updatedUser = res.data?.data;
+      if (updatedUser) {
+        const currentUser = JSON.parse(localStorage.getItem("sb_user") || "{}");
+        const newUser = { ...currentUser, ...updatedUser };
+        localStorage.setItem("sb_user", JSON.stringify(newUser));
+      }
+
       toast.success("Profile updated!");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Update failed");
@@ -43,7 +55,7 @@ export default function StudentProfilePage() {
       {/* Avatar */}
       <Card className="p-6 mb-5">
         <div className="flex items-center gap-5">
-          <Avatar name={user?.name || "U"} size="xl" />
+          <Avatar name={user?.name || "U"} src={form.image} size="xl" />
           <div>
             <h2 className="font-display font-semibold text-lg text-slate-900">
               {user?.name}
@@ -73,10 +85,19 @@ export default function StudentProfilePage() {
           <Input
             label="Email Address"
             type="email"
-            value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+            disabled
+            value={user?.email || ""}
             icon={<Mail className="h-4 w-4" />}
+            className="opacity-60 cursor-not-allowed"
           />
+          <Input
+            label="Profile Picture URL"
+            value={form.image}
+            onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))}
+            icon={<Image className="h-4 w-4" />}
+            placeholder="https://example.com/photo.jpg"
+          />
+          <p className="text-xs text-slate-400 font-body -mt-2">Imgur URL</p>
         </div>
         <Button className="mt-5" loading={saving} onClick={handleSave}>
           Save Changes

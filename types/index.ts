@@ -3,11 +3,13 @@ export type Role = "STUDENT" | "TUTOR" | "ADMIN";
 export interface User {
   id: string;
   name: string;
+  status: string;
   email: string;
   role: Role;
   avatar?: string;
   isActive: boolean;
   createdAt: string;
+  image: string;
 }
 
 export interface TutorProfile {

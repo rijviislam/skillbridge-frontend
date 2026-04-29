@@ -39,10 +39,7 @@ export default function Navbar() {
     return "/dashboard";
   };
 
-  const navLinks = [
-    { href: "/tutors", label: " Tutors" },
-    { href: "/tutors?featured=true", label: "Featured" },
-  ];
+  const navLinks = [{ href: "/tutors", label: " Tutors" }];
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
@@ -54,7 +51,7 @@ export default function Navbar() {
               <BookOpen className="h-4 w-4 text-white" />
             </div>
             <span className="font-display font-bold text-xl text-slate-900">
-              Skill<span className="text-brand-500">Bridge</span>
+              Edu<span className="text-brand-500">Core</span>
             </span>
           </Link>
 
@@ -84,7 +81,12 @@ export default function Navbar() {
                   onClick={() => setDropOpen(!dropOpen)}
                   className="flex items-center gap-2 rounded-xl px-3 py-1.5 hover:bg-slate-50 transition-colors"
                 >
-                  <Avatar name={user.name} size="sm" />
+                  <Avatar
+                    name={user.name}
+                    src={user.image || ""}
+                    size="sm"
+                    className="border-2 border-brand-600"
+                  />
                   <span className="text-sm font-medium font-body text-slate-700 max-w-[120px] truncate">
                     {user.name}
                   </span>
