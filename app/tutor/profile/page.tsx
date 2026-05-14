@@ -6,8 +6,14 @@ import Input from "@/components/ui/Input";
 import { useAuth } from "@/context/AuthContext";
 import { tutorApi, tutorsApi } from "@/lib/api";
 import type { Category, TutorProfile } from "@/types";
-import { BookOpen, DollarSign, GraduationCap, Mail, User } from "lucide-react";
-import Image from "next/image";
+import {
+  BookOpen,
+  DollarSign,
+  GraduationCap,
+  ImageIcon,
+  Mail,
+  User,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -160,7 +166,7 @@ export default function TutorProfilePage() {
             label="Profile Picture URL"
             value={form.image}
             onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))}
-            icon={<Image className="h-4 w-4" />}
+            icon={<ImageIcon className="h-4 w-4" />}
             placeholder="https://example.com/photo.jpg"
           />
           <p className="text-xs text-slate-400 font-body -mt-2">Imgur URL</p>
