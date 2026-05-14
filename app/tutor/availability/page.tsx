@@ -9,9 +9,9 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 interface TimeSlot {
-  id?: string; // existing slot এর id
-  startTime: string; // "09:00"
-  endTime: string;   // "10:00"
+  id?: string;
+  startTime: string;
+  endTime: string;
 }
 
 interface DaySlots {
@@ -40,7 +40,6 @@ export default function AvailabilityPage() {
         if (data.length > 0) {
           setDays(
             defaultDaySlots().map((def) => {
-              // ✅ এই day এর সব slots খোঁজো
               const daySlots = data.filter((d: any) => {
                 return new Date(d.startTime).getDay() === def.dayOfWeek;
               });
@@ -76,9 +75,7 @@ export default function AvailabilityPage() {
   const toggleDay = (dayOfWeek: number) => {
     setDays((prev) =>
       prev.map((d) =>
-        d.dayOfWeek === dayOfWeek
-          ? { ...d, isAvailable: !d.isAvailable }
-          : d,
+        d.dayOfWeek === dayOfWeek ? { ...d, isAvailable: !d.isAvailable } : d,
       ),
     );
   };
@@ -153,7 +150,6 @@ export default function AvailabilityPage() {
           endTime.setDate(now.getDate() + diff);
           endTime.setHours(endHour, endMin, 0, 0);
 
-          // ✅ existing slot হলে skip, নতুন হলে create
           if (!slot.id) {
             await tutorApi.updateAvailability({
               startTime: startTime.toISOString(),
@@ -187,12 +183,12 @@ export default function AvailabilityPage() {
           Availability
         </h1>
         <p className="text-slate-500 font-body text-sm mt-0.5">
-      You can set a maximum of 5 time slots per day · {enabledCount} days enabled
+          You can set a maximum of 5 time slots per day · {enabledCount} days
+          enabled
         </p>
       </div>
 
       <Card className="p-6">
-        
         <div className="space-y-4">
           {days.map((day) => (
             <div
@@ -271,7 +267,6 @@ export default function AvailabilityPage() {
                         }
                         className="px-3 py-1.5 rounded-lg border border-slate-200 text-sm font-body text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-400 bg-white"
                       />
-                      {/* ✅ Delete button — শুধু একটার বেশি থাকলে দেখাবে */}
                       {day.slots.length > 1 && (
                         <button
                           onClick={() => removeSlot(day.dayOfWeek, index)}

@@ -25,7 +25,6 @@ export default function StudentProfilePage() {
         image: form.image || undefined,
       });
 
-      // ✅ localStorage এ updated user save করো
       const updatedUser = res.data?.data;
       if (updatedUser) {
         const currentUser = JSON.parse(localStorage.getItem("sb_user") || "{}");

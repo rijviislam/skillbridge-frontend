@@ -43,29 +43,31 @@ export default function TutorProfilePage() {
   const [subject, setSubject] = useState("");
   const [notes, setNotes] = useState("");
 
-useEffect(() => {
-  const load = async () => {
-    try {
-      const tutorRes = await tutorsApi.getById(id);
-      const tutorData =
-        tutorRes.data?.tutor || tutorRes.data?.data || tutorRes.data;
-      setTutor(tutorData);
-
+  useEffect(() => {
+    const load = async () => {
       try {
-        const reviewRes = await reviewsApi.getForTutor(tutorData?.userId || id);
-        const reviewList = reviewRes.data?.data || reviewRes.data || [];
-        setReviews(Array.isArray(reviewList) ? reviewList : []);
-      } catch {
-        setReviews([]);
+        const tutorRes = await tutorsApi.getById(id);
+        const tutorData =
+          tutorRes.data?.tutor || tutorRes.data?.data || tutorRes.data;
+        setTutor(tutorData);
+
+        try {
+          const reviewRes = await reviewsApi.getForTutor(
+            tutorData?.userId || id,
+          );
+          const reviewList = reviewRes.data?.data || reviewRes.data || [];
+          setReviews(Array.isArray(reviewList) ? reviewList : []);
+        } catch {
+          setReviews([]);
+        }
+      } catch (err) {
+        toast.error("Failed to load tutor profile");
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      toast.error("Failed to load tutor profile");
-    } finally {
-      setLoading(false);
-    }
-  };
-  load();
-}, [id]);
+    };
+    load();
+  }, [id]);
 
   const handleBook = async () => {
     if (!user) {
@@ -391,7 +393,6 @@ useEffect(() => {
             </h2>
             <p className="text-sm text-slate-500 font-body mb-5">with {name}</p>
             <div className="space-y-4">
-              {/* ✅ Available slots */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
                   Select Time Slot
