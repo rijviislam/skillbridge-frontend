@@ -31,7 +31,6 @@ export default function BookingsPage() {
       .getAll()
       .then((r) => {
         console.log("bookings raw:", r.data);
-        // ✅ সব possible structure handle করো
         const raw = r.data?.data;
         const list = Array.isArray(raw)
           ? raw
