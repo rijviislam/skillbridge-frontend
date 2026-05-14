@@ -22,7 +22,6 @@ function BrowseTutorsContent() {
   const [page, setPage] = useState(1);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  // ✅ Separate search input state for debouncing
   const [searchInput, setSearchInput] = useState(
     searchParams.get("search") || "",
   );
@@ -36,7 +35,6 @@ function BrowseTutorsContent() {
     sort: "rating",
   });
 
-  // ✅ Debounce search input — only update filters.search after 400ms of inactivity
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -88,7 +86,7 @@ function BrowseTutorsContent() {
   }, [fetchTutors]);
 
   const clearFilters = () => {
-    setSearchInput(""); // ✅ Also reset the visible input
+    setSearchInput("");
     setFilters({
       search: "",
       categoryId: "",
@@ -125,7 +123,7 @@ function BrowseTutorsContent() {
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-            {/* ✅ Use searchInput for display, handleSearchChange for debounced filter update */}
+
             <input
               value={searchInput}
               onChange={handleSearchChange}
@@ -216,7 +214,7 @@ function BrowseTutorsContent() {
                 "{filters.search}"
                 <button
                   onClick={() => {
-                    setSearchInput(""); // ✅ Clear visible input too
+                    setSearchInput("");
                     setFilters((f) => ({ ...f, search: "" }));
                   }}
                 >

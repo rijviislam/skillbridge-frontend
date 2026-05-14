@@ -8,7 +8,6 @@ import { CalendarDays, CheckCircle, Star, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-// ✅ Reviews Section Component
 function ReviewsSection({ tutorId }: { tutorId?: string }) {
   const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,52 +59,52 @@ function ReviewsSection({ tutorId }: { tutorId?: string }) {
         </div>
       ) : (
         <div className="space-y-4">
-    {reviews.map((r: any) => (
-  <div
-    key={r.id}
-    className="flex gap-3 border-b border-slate-50 last:border-0 pb-4 last:pb-0"
-  >
-    <Avatar name={r.student?.name || "Student"} size="sm" />
-    <div className="flex-1">
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-sm font-medium font-body text-slate-800">
-          {r.student?.name || "Student"}
-        </span>
-        <div className="flex items-center gap-1">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <Star
-              key={star}
-              className={`h-3.5 w-3.5 ${
-                star <= r.rating
-                  ? "text-amber-400 fill-amber-400"
-                  : "text-slate-200"
-              }`}
-            />
+          {reviews.map((r: any) => (
+            <div
+              key={r.id}
+              className="flex gap-3 border-b border-slate-50 last:border-0 pb-4 last:pb-0"
+            >
+              <Avatar name={r.student?.name || "Student"} size="sm" />
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium font-body text-slate-800">
+                    {r.student?.name || "Student"}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-3.5 w-3.5 ${
+                          star <= r.rating
+                            ? "text-amber-400 fill-amber-400"
+                            : "text-slate-200"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {r.booking?.availability && (
+                  <p className="text-xs text-brand-600 font-body mb-1 flex items-center gap-1">
+                    <CalendarDays className="h-3 w-3" />
+                    Session: {formatDate(
+                      r.booking.availability.startTime,
+                    )}, {formatTime(r.booking.availability.startTime)} –{" "}
+                    {formatTime(r.booking.availability.endTime)}
+                  </p>
+                )}
+
+                {r.comment && (
+                  <p className="text-sm text-slate-600 font-body leading-relaxed">
+                    {r.comment}
+                  </p>
+                )}
+                <p className="text-xs text-slate-400 font-body mt-1">
+                  {formatDate(r.createdAt)}
+                </p>
+              </div>
+            </div>
           ))}
-        </div>
-      </div>
-
-      {/* ✅ Session date */}
-      {r.booking?.availability && (
-        <p className="text-xs text-brand-600 font-body mb-1 flex items-center gap-1">
-          <CalendarDays className="h-3 w-3" />
-          Session: {formatDate(r.booking.availability.startTime)},{" "}
-          {formatTime(r.booking.availability.startTime)} –{" "}
-          {formatTime(r.booking.availability.endTime)}
-        </p>
-      )}
-
-      {r.comment && (
-        <p className="text-sm text-slate-600 font-body leading-relaxed">
-          {r.comment}
-        </p>
-      )}
-      <p className="text-xs text-slate-400 font-body mt-1">
-        {formatDate(r.createdAt)}
-      </p>
-    </div>
-  </div>
-))}
         </div>
       )}
     </Card>
@@ -298,7 +297,6 @@ export default function TutorDashboardPage() {
         )}
       </Card>
 
-      {/* ✅ Ratings & Reviews Section */}
       <ReviewsSection tutorId={user?.id} />
     </div>
   );
