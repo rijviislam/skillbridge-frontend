@@ -155,7 +155,7 @@ export default function AdminDashboardPage() {
                       {b.student?.name || "—"}
                     </td>
                     <td className="py-3 pr-4 text-sm font-body text-slate-700">
-                      {b.tutor?.name || "—"} {/* ✅ tutor directly */}
+                      {b.tutor?.name || "—"}
                     </td>
                     <td className="py-3 pr-4 text-sm font-body text-slate-600">
                       {b.availability
