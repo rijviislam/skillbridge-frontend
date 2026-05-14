@@ -39,7 +39,11 @@ export default function Navbar() {
     return "/dashboard";
   };
 
-  const navLinks = [{ href: "/tutors", label: " Tutors" }];
+  const navLinks = [
+    { href: "/tutors", label: " Tutors" },
+    { href: "/about", label: " About" },
+    { href: "/contact", label: "Contact" },
+  ];
 
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
