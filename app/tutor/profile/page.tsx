@@ -6,7 +6,8 @@ import Input from "@/components/ui/Input";
 import { useAuth } from "@/context/AuthContext";
 import { tutorApi, tutorsApi } from "@/lib/api";
 import type { Category, TutorProfile } from "@/types";
-import { BookOpen, DollarSign, GraduationCap, User } from "lucide-react";
+import { BookOpen, DollarSign, GraduationCap, Mail, User } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -27,6 +28,10 @@ export default function TutorProfilePage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+  const [form, setForm] = useState({
+    name: user?.name || "",
+    image: user?.image || "",
+  });
 
   const addSubject = () => {
     if (!subjectInput.trim()) return;
@@ -129,6 +134,40 @@ export default function TutorProfilePage() {
             icon={<GraduationCap className="h-4 w-4" />}
           />
         </div>
+      </Card>
+
+      {/* Edit form */}
+      <Card className="p-6 mb-5">
+        <h3 className="font-display font-semibold text-slate-900 mb-4 flex items-center gap-2">
+          <User className="h-4 w-4 text-brand-500" /> Personal Information
+        </h3>
+        <div className="space-y-4">
+          <Input
+            label="Full Name"
+            value={user?.name}
+            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+            icon={<User className="h-4 w-4" />}
+          />
+          <Input
+            label="Email Address"
+            type="email"
+            disabled
+            value={user?.email || ""}
+            icon={<Mail className="h-4 w-4" />}
+            className="opacity-60 cursor-not-allowed"
+          />
+          <Input
+            label="Profile Picture URL"
+            value={form.image}
+            onChange={(e) => setForm((f) => ({ ...f, image: e.target.value }))}
+            icon={<Image className="h-4 w-4" />}
+            placeholder="https://example.com/photo.jpg"
+          />
+          <p className="text-xs text-slate-400 font-body -mt-2">Imgur URL</p>
+        </div>
+        <Button className="mt-5" loading={saving} onClick={handleSave}>
+          Save Changes
+        </Button>
       </Card>
 
       {/* Teaching */}

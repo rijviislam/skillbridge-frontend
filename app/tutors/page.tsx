@@ -207,7 +207,7 @@ function BrowseTutorsContent() {
         )}
 
         {hasFilters && (
-          <div className="flex items-center gap-2 mb-5 flex-wrap">
+          <div className="flex items-center gap-2 mb-5 flex-wrap ">
             <span className="text-xs text-slate-500 font-body">
               Active filters:
             </span>
