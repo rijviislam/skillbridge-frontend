@@ -21,18 +21,33 @@ export default function StudentDashboardPage() {
   const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
+    load();
+  }, []);
+
+  const load = () => {
+    setLoading(true);
     bookingsApi
       .getAll({ limit: 10 })
       .then((r) => {
-        console.log("bookings response:", r.data);
-        const data = r.data?.data || r.data?.bookings || r.data || [];
-        setBookings(Array.isArray(data) ? data : []);
+        const data = r.data?.data;
+        let all: Booking[] = [];
+
+        if (data?.upcoming || data?.past) {
+          all = [...(data.upcoming || []), ...(data.past || [])];
+        } else if (Array.isArray(data)) {
+          all = data;
+        } else if (Array.isArray(r.data?.bookings)) {
+          all = r.data.bookings;
+        } else if (Array.isArray(r.data)) {
+          all = r.data;
+        }
+
+        setBookings(all);
       })
       .catch(() => setBookings([]))
       .finally(() => setLoading(false));
-  }, []);
+  };
 
   const stats = {
     total: bookings.length,
@@ -42,10 +57,10 @@ export default function StudentDashboardPage() {
   };
 
   const recentBookings = bookings.slice(0, 5);
-
+  console.log("first", bookings.length);
   return (
     <div>
-      <div className="mb-8">
+      <div className="mb-8 ">
         <h1 className="font-display text-2xl font-bold text-slate-900">
           Good day, {user?.name?.split(" ")[0]} 👋
         </h1>
@@ -59,7 +74,7 @@ export default function StudentDashboardPage() {
         {[
           {
             label: "Total Bookings",
-            value: stats.total,
+            value: bookings.length,
             icon: <CalendarDays className="h-5 w-5" />,
             color: "text-blue-500",
             bg: "bg-blue-50",
@@ -117,7 +132,7 @@ export default function StudentDashboardPage() {
       </div>
 
       {/* Recent bookings */}
-      <Card className="p-5">
+      <Card className="p-5 ">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display font-semibold text-slate-900">
             Recent Bookings

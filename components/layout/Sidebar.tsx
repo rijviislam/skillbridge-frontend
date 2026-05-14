@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { BookOpen, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Avatar } from "../ui";
 
 interface NavItem {
   href: string;
@@ -39,14 +40,9 @@ export default function Sidebar({ items }: SidebarProps) {
         <div className="px-4 py-4 border-b border-slate-800">
           <div className="flex items-center gap-3 px-2">
             <div className="h-9 w-9 rounded-full bg-brand-500 flex items-center justify-center font-display font-bold text-white text-sm flex-shrink-0">
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .slice(0, 2)
-                .join("")
-                .toUpperCase()}
+              <Avatar name={user.name} src={user.image || ""} size="sm" />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 ">
               <p className="text-sm font-medium text-white truncate font-body">
                 {user.name}
               </p>

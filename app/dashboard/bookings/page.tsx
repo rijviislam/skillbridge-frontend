@@ -30,17 +30,19 @@ export default function BookingsPage() {
     bookingsApi
       .getAll()
       .then((r) => {
-        console.log("bookings:", r.data);
-        const data = r.data?.data;
-        let all = [];
-        if (data?.upcoming || data?.past) {
-          all = [...(data.upcoming || []), ...(data.past || [])];
-        } else if (Array.isArray(data)) {
-          all = data;
-        } else if (Array.isArray(r.data)) {
-          all = r.data;
-        }
-        setBookings(all);
+        console.log("bookings raw:", r.data);
+        // ✅ সব possible structure handle করো
+        const raw = r.data?.data;
+        const list = Array.isArray(raw)
+          ? raw
+          : Array.isArray(raw?.data)
+            ? raw.data
+            : Array.isArray(r.data)
+              ? r.data
+              : [];
+        console.log("bookings list:", list);
+        console.log("first booking status:", list[0]?.status);
+        setBookings(list);
       })
       .catch(() => setBookings([]))
       .finally(() => setLoading(false));
