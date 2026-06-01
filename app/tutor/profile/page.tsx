@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function TutorProfilePage() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth(); // ✅ pull refreshUser
   const [profile, setProfile] = useState<Partial<TutorProfile>>({});
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,10 +34,20 @@ export default function TutorProfilePage() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
+
   const [form, setForm] = useState({
     name: user?.name || "",
     image: user?.image || "",
   });
+
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user.name || "",
+        image: user.image || "",
+      });
+    }
+  }, [user]);
 
   const addSubject = () => {
     if (!subjectInput.trim()) return;
@@ -63,10 +73,22 @@ export default function TutorProfilePage() {
     try {
       await tutorApi.updateProfile({
         ...profile,
+        ...form,
         hourlyRate: profile.hourlyRate ? Number(profile.hourlyRate) : 0,
-        experience: profile.experience ? Number(profile.experience) : 0, // ✅ String → Int
+        experience: profile.experience ? Number(profile.experience) : 0,
         subjects: profile.subjects || [],
       });
+
+      const currentUser = JSON.parse(localStorage.getItem("sb_user") || "{}");
+      const newUser = {
+        ...currentUser,
+        name: form.name,
+        image: form.image,
+      };
+      localStorage.setItem("sb_user", JSON.stringify(newUser));
+
+      refreshUser();
+
       toast.success("Profile updated!");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to save");
@@ -93,22 +115,23 @@ export default function TutorProfilePage() {
         </p>
       </div>
 
-      {/* Avatar section */}
-      <Card className="p-6 mb-5">
-        <div className="flex items-center gap-4">
-          <Avatar name={user?.name || "T"} size="xl" />
+      <Card className="p-6 mb-5 ">
+        <div className="flex items-center gap-5">
+          <Avatar name={user?.name || "U"} src={form.image} size="xl" />
           <div>
-            <p className="font-display font-semibold text-slate-900">
+            <h2 className="font-display font-semibold text-lg text-slate-900">
               {user?.name}
+            </h2>
+            <p className="text-sm text-slate-500 font-body capitalize">
+              {user?.role}
             </p>
-            <p className="text-xs text-slate-400 font-body mt-0.5">
+            <p className="text-xs text-slate-400 font-body mt-1">
               {user?.email}
             </p>
           </div>
         </div>
       </Card>
 
-      {/* About */}
       <Card className="p-6 mb-5">
         <h3 className="font-display font-semibold text-slate-900 mb-4 flex items-center gap-2">
           <User className="h-4 w-4 text-brand-500" /> About You
@@ -142,7 +165,6 @@ export default function TutorProfilePage() {
         </div>
       </Card>
 
-      {/* Edit form */}
       <Card className="p-6 mb-5">
         <h3 className="font-display font-semibold text-slate-900 mb-4 flex items-center gap-2">
           <User className="h-4 w-4 text-brand-500" /> Personal Information
@@ -150,7 +172,7 @@ export default function TutorProfilePage() {
         <div className="space-y-4">
           <Input
             label="Full Name"
-            value={user?.name}
+            value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             icon={<User className="h-4 w-4" />}
           />
@@ -176,7 +198,6 @@ export default function TutorProfilePage() {
         </Button>
       </Card>
 
-      {/* Teaching */}
       <Card className="p-6 mb-5">
         <h3 className="font-display font-semibold text-slate-900 mb-4 flex items-center gap-2">
           <BookOpen className="h-4 w-4 text-brand-500" /> Teaching Details
@@ -193,7 +214,6 @@ export default function TutorProfilePage() {
               setProfile((p) => ({ ...p, categoryId: e.target.value }))
             }
           />
-
           <Input
             label="Hourly Rate (USD)"
             type="number"
@@ -204,8 +224,6 @@ export default function TutorProfilePage() {
             placeholder="50"
             icon={<DollarSign className="h-4 w-4" />}
           />
-
-          {/* Subjects */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5 font-body">
               Subjects

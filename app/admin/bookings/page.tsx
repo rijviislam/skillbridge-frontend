@@ -47,20 +47,22 @@ export default function AdminBookingsPage() {
             {total} total bookings
           </p>
         </div>
-   <Select
-  options={[
-    { value: "all", label: "All Status" },
-    { value: "CONFIRMED", label: "Confirmed" }, 
-    { value: "COMPLETED", label: "Completed" },   
-    { value: "CANCELLED", label: "Cancelled" },  
-  ]}
-  value={filter}
-  onChange={(e) => {
-    setFilter(e.target.value);
-    setPage(1);
-  }}
-  className="w-40"
-/>
+        <div>
+          <Select
+            options={[
+              { value: "all", label: "All Status" },
+              { value: "CONFIRMED", label: "Confirmed" },
+              { value: "COMPLETED", label: "Completed" },
+              { value: "CANCELLED", label: "Cancelled" },
+            ]}
+            value={filter}
+            onChange={(e) => {
+              setFilter(e.target.value);
+              setPage(1);
+            }}
+            className="w-40"
+          />
+        </div>
       </div>
 
       <Card className="overflow-hidden">
@@ -132,11 +134,11 @@ export default function AdminBookingsPage() {
                       <td className="px-4 py-3">
                         <StatusBadge status={b.status} />
                       </td>
-                <td className="px-4 py-3 text-sm font-display font-semibold text-slate-900">
-  {b.tutor?.tutorProfile?.hourlyRate
-    ? `$${b.tutor.tutorProfile.hourlyRate}`
-    : "—"}
-</td>
+                      <td className="px-4 py-3 text-sm font-display font-semibold text-slate-900">
+                        {b.tutor?.tutorProfile?.hourlyRate
+                          ? `$${b.tutor.tutorProfile.hourlyRate}`
+                          : "—"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -91,6 +91,9 @@ export const tutorApi = {
     api.post("/api/tutors/availability", data),
   getSessions: (params?: Record<string, unknown>) =>
     api.get("/api/bookings", { params }),
+  deleteAvailability: (availabilityId: string) => {
+    return api.delete(`/tutors/availability/${availabilityId}`);
+  },
 };
 
 // ─── Reviews ─────────────────────────────────────────────

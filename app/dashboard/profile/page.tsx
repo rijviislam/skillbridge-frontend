@@ -40,6 +40,8 @@ export default function StudentProfilePage() {
     }
   };
 
+  console.log("IMAGE :", form.image);
+
   return (
     <div className="max-w-2xl">
       <div className="mb-6">
@@ -52,7 +54,7 @@ export default function StudentProfilePage() {
       </div>
 
       {/* Avatar */}
-      <Card className="p-6 mb-5">
+      <Card className="p-6 mb-5 ">
         <div className="flex items-center gap-5">
           <Avatar name={user?.name || "U"} src={form.image} size="xl" />
           <div>

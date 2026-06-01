@@ -22,6 +22,7 @@ interface AuthContextType {
     role: string,
   ) => Promise<{ needsVerification: boolean }>;
   logout: () => void;
+  refreshUser: () => void; // ✅ add this line
   isStudent: boolean;
   isTutor: boolean;
   isAdmin: boolean;
@@ -132,6 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         register,
         logout,
+        refreshUser: loadUser,
         isStudent: role === "STUDENT",
         isTutor: role === "TUTOR",
         isAdmin: role === "ADMIN",

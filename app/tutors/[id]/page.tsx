@@ -128,11 +128,12 @@ export default function TutorProfilePage() {
   const totalReviews = tutor?.reviews?.length || tutor?.totalReviews || 0;
   const totalSessions = tutor?.totalSessions || 0;
   const subjects = tutor?.subjects || [];
-  const availability = tutor?.availability || [];
+  const availability = tutor?.availabilities || tutor?.availability || [];
   const categories = tutor?.categories || [];
   const isVerified = tutor?.isVerified || false;
   const profileImage = tutor?.user?.image || tutor?.profileImage || "";
 
+  console.log("LOOOO", availability);
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
