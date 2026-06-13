@@ -1,12 +1,18 @@
 "use client";
 
-import { Avatar, Card, Spinner, StatusBadge } from "@/components/ui";
+import { Avatar, Card, Spinner } from "@/components/ui";
 import { useAuth } from "@/context/AuthContext";
 import { bookingsApi, reviewsApi, tutorApi } from "@/lib/api";
 import { formatDate, formatTime } from "@/lib/utils";
 import { CalendarDays, CheckCircle, Star, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+
+const STATUS_OPTIONS = [
+  { value: "CONFIRMED", label: "Pending" },
+  { value: "COMPLETED", label: "Completed" },
+  { value: "CANCELLED", label: "Cancelled" },
+];
 
 function ReviewsSection({ tutorId }: { tutorId?: string }) {
   const [reviews, setReviews] = useState<any[]>([]);
@@ -64,7 +70,11 @@ function ReviewsSection({ tutorId }: { tutorId?: string }) {
               key={r.id}
               className="flex gap-3 border-b border-slate-50 last:border-0 pb-4 last:pb-0"
             >
-              <Avatar name={r.student?.name || "Student"} size="sm" />
+              <Avatar
+                name={r.student?.name || "Student"}
+                src={r.student?.image}
+                size="sm"
+              />
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-sm font-medium font-body text-slate-800">
@@ -146,20 +156,36 @@ export default function TutorDashboardPage() {
     completed: sessions.filter((s) => s.status === "COMPLETED").length,
   };
 
-  const handleMarkComplete = async (id: string) => {
+  const handleStatusChange = async (bookingId: string, newStatus: string) => {
     try {
-      await bookingsApi.complete(id);
+      if (newStatus === "COMPLETED") {
+        await bookingsApi.complete(bookingId);
+      } else if (newStatus === "CANCELLED") {
+        await bookingsApi.cancel(bookingId);
+      } else {
+        return; // "Pending" (CONFIRMED) is the default state, no API call needed
+      }
+
       setSessions((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, status: "COMPLETED" } : s)),
+        prev.map((s: any) =>
+          s.id === bookingId ? { ...s, status: newStatus } : s,
+        ),
       );
-      toast.success("Session marked as completed");
-    } catch {
-      toast.error("Failed to update session");
+
+      toast.success(
+        newStatus === "COMPLETED"
+          ? "Session marked as completed"
+          : "Session cancelled",
+      );
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to update session");
     }
   };
 
   const getStudentName = (s: any) =>
     s.student?.name || s.student?.user?.name || "Student";
+
+  console.log(sessions);
 
   return (
     <div>
@@ -233,7 +259,7 @@ export default function TutorDashboardPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-100">
-                  {["Student", "Date & Time", "Status", "Action"].map((h) => (
+                  {["Student", "Date & Time", "Status"].map((h) => (
                     <th
                       key={h}
                       className="text-left text-xs font-medium text-slate-500 font-body pb-3 pr-4"
@@ -251,7 +277,11 @@ export default function TutorDashboardPage() {
                   >
                     <td className="py-3 pr-4">
                       <div className="flex items-center gap-2">
-                        <Avatar name={getStudentName(s)} size="sm" />
+                        <Avatar
+                          name={getStudentName(s)}
+                          src={s.student?.image}
+                          size="sm"
+                        />
                         <span className="text-sm font-body text-slate-700">
                           {getStudentName(s)}
                         </span>
@@ -272,22 +302,35 @@ export default function TutorDashboardPage() {
                       )}
                     </td>
                     <td className="py-3 pr-4">
-                      <StatusBadge status={s.status} />
-                    </td>
-                    <td className="py-3">
-                      {s.status === "CONFIRMED" && (
-                        <button
-                          onClick={() => handleMarkComplete(s.id)}
-                          className="text-xs text-green-600 hover:text-green-700 font-body font-medium hover:underline"
-                        >
-                          Mark Complete
-                        </button>
-                      )}
-                      {s.status === "COMPLETED" && (
-                        <span className="text-xs text-green-500 font-body">
-                          ✓ Done
-                        </span>
-                      )}
+                      <select
+                        value={s.status}
+                        disabled={
+                          s.status === "COMPLETED" || s.status === "CANCELLED"
+                        }
+                        onChange={(e) =>
+                          handleStatusChange(s.id, e.target.value)
+                        }
+                        className={`text-xs font-body font-medium rounded-lg px-2.5 py-1.5 border focus:outline-none focus:ring-2 focus:ring-brand-400 disabled:cursor-not-allowed ${
+                          s.status === "COMPLETED"
+                            ? "bg-green-50 text-green-700 border-green-100"
+                            : s.status === "CANCELLED"
+                              ? "bg-red-50 text-red-600 border-red-100"
+                              : "bg-amber-50 text-amber-700 border-amber-100"
+                        }`}
+                      >
+                        {STATUS_OPTIONS.map((opt) => (
+                          <option
+                            key={opt.value}
+                            value={opt.value}
+                            disabled={
+                              opt.value === "CONFIRMED" &&
+                              s.status !== "CONFIRMED"
+                            }
+                          >
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
                     </td>
                   </tr>
                 ))}

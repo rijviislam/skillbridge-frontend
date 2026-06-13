@@ -15,6 +15,7 @@ export interface User {
 export interface TutorProfile {
   id: string;
   userId: string;
+  image: string;
   user?: User;
   bio: string;
   subjects: string[];

@@ -30,17 +30,17 @@ export default function BookingsPage() {
     bookingsApi
       .getAll()
       .then((r) => {
-        console.log("bookings raw:", r.data);
         const raw = r.data?.data;
-        const list = Array.isArray(raw)
-          ? raw
-          : Array.isArray(raw?.data)
-            ? raw.data
-            : Array.isArray(r.data)
-              ? r.data
-              : [];
-        console.log("bookings list:", list);
-        console.log("first booking status:", list[0]?.status);
+        let list: any[] = [];
+
+        if (raw?.upcoming || raw?.past) {
+          list = [...(raw.upcoming || []), ...(raw.past || [])];
+        } else if (Array.isArray(raw)) {
+          list = raw;
+        } else if (Array.isArray(r.data)) {
+          list = r.data;
+        }
+
         setBookings(list);
       })
       .catch(() => setBookings([]))
@@ -100,6 +100,8 @@ export default function BookingsPage() {
   const getTutorName = (b: any) =>
     b.tutor?.name || b.tutor?.user?.name || "Tutor";
 
+  console.log("BOOKING", bookings);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -139,7 +141,7 @@ export default function BookingsPage() {
           {filtered.map((b: any) => (
             <Card key={b.id} className="p-5">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <Avatar name={getTutorName(b)} size="md" />
+                <Avatar name={getTutorName(b)} src={b.tutor?.image} size="md" />
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
                     <h3 className="font-display font-semibold text-slate-900">

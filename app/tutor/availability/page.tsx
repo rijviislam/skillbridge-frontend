@@ -102,7 +102,11 @@ export default function AvailabilityPage() {
           const slotToRemove = d.slots[index];
           // Track the deleted slot ID if it exists
           if (slotToRemove.id) {
-            setDeletedSlotIds((prev) => new Set([...prev, slotToRemove.id!]));
+            setDeletedSlotIds((prev) => {
+              const next = new Set(prev);
+              next.add(slotToRemove.id!);
+              return next;
+            });
           }
 
           const newSlots = d.slots.filter((_, i) => i !== index);

@@ -11,6 +11,8 @@ interface TutorCardProps {
 export default function TutorCard({ tutor }: TutorCardProps) {
   const name = tutor.user?.name || "Tutor";
 
+  console.log("TTT", tutor.user?.image, tutor.rating);
+
   return (
     <Link href={`/tutors/${tutor.userId}`}>
       <Card className="group hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 overflow-hidden h-full">
@@ -20,7 +22,8 @@ export default function TutorCard({ tutor }: TutorCardProps) {
         <div className="p-5">
           {/* Header */}
           <div className="flex items-start gap-3 mb-4">
-            <Avatar name={name} src={tutor.profileImage} size="lg" />
+            {/* <Avatar name={name} size="lg" /> */}
+            <Avatar name={name || "T"} src={tutor?.user?.image} size="sm" />
             <div className="flex-1 min-w-0">
               <h3 className="font-display font-semibold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition-colors line-clamp-1">
                 {name}

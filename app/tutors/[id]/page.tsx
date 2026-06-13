@@ -7,7 +7,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { useAuth } from "@/context/AuthContext";
 import { bookingsApi, reviewsApi, tutorsApi } from "@/lib/api";
-import { DAYS_OF_WEEK, formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import type { Review } from "@/types";
 import {
   BookOpen,
@@ -31,17 +31,17 @@ export default function TutorProfilePage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [bookingOpen, setBookingOpen] = useState(false);
-  const [booking, setBooking] = useState({
-    scheduledDate: "",
-    startTime: "",
-    endTime: "",
-    subject: "",
-    notes: "",
-  });
   const [submitting, setSubmitting] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [subject, setSubject] = useState("");
   const [notes, setNotes] = useState("");
+
+  // Review state
+  const [completedBooking, setCompletedBooking] = useState<any>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -51,6 +51,7 @@ export default function TutorProfilePage() {
           tutorRes.data?.tutor || tutorRes.data?.data || tutorRes.data;
         setTutor(tutorData);
 
+        // Load reviews
         try {
           const reviewRes = await reviewsApi.getForTutor(
             tutorData?.userId || id,
@@ -60,6 +61,22 @@ export default function TutorProfilePage() {
         } catch {
           setReviews([]);
         }
+
+        if (user && isStudent) {
+          try {
+            const bookRes = await bookingsApi.getMyBookings();
+            const myBookings = bookRes.data?.data || bookRes.data || [];
+            const done = myBookings.find(
+              (b: any) =>
+                b.tutorId === tutorData?.userId &&
+                b.status === "COMPLETED" &&
+                !b.review,
+            );
+            setCompletedBooking(done || null);
+          } catch {
+            setCompletedBooking(null);
+          }
+        }
       } catch (err) {
         toast.error("Failed to load tutor profile");
       } finally {
@@ -67,7 +84,7 @@ export default function TutorProfilePage() {
       }
     };
     load();
-  }, [id]);
+  }, [id, user, isStudent]);
 
   const handleBook = async () => {
     if (!user) {
@@ -98,6 +115,33 @@ export default function TutorProfilePage() {
       setSubmitting(false);
     }
   };
+
+  const handleReview = async () => {
+    if (!completedBooking) return;
+    setSubmittingReview(true);
+    try {
+      await reviewsApi.create({
+        bookingId: completedBooking.id,
+        tutorId: tutor?.userId, // ← tutorId from the tutor's userId (not tutor.id)
+        rating: reviewRating,
+        comment: reviewComment,
+      });
+      toast.success("Review submitted!");
+      setReviewOpen(false);
+      setReviewComment("");
+      setReviewRating(5);
+      setCompletedBooking(null);
+      // Refresh reviews list
+      const reviewRes = await reviewsApi.getForTutor(tutor?.userId || id);
+      setReviews(reviewRes.data?.data || reviewRes.data || []);
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || "Failed to submit review");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  console.log("REVIEWS", reviews);
 
   if (loading)
     return (
@@ -133,7 +177,6 @@ export default function TutorProfilePage() {
   const isVerified = tutor?.isVerified || false;
   const profileImage = tutor?.user?.image || tutor?.profileImage || "";
 
-  console.log("LOOOO", availability);
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
@@ -265,9 +308,9 @@ export default function TutorProfilePage() {
                       <div className="h-2 w-2 rounded-full bg-green-400" />
                       <div>
                         <p className="text-xs font-medium text-slate-700 font-body">
-                          {a.dayOfWeek !== undefined
-                            ? DAYS_OF_WEEK[a.dayOfWeek]
-                            : ""}
+                          {new Date(a.startTime).toLocaleDateString([], {
+                            weekday: "short",
+                          })}
                         </p>
                         <p className="text-xs text-slate-500 font-body">
                           {a.startTime
@@ -312,6 +355,7 @@ export default function TutorProfilePage() {
                         <div className="flex items-center gap-2">
                           <Avatar
                             name={r.student?.name || "Student"}
+                            src={r.student?.image}
                             size="sm"
                           />
                           <span className="text-sm font-medium font-body text-slate-800">
@@ -379,6 +423,18 @@ export default function TutorProfilePage() {
                 onClick={() => setBookingOpen(true)}
               >
                 <Calendar className="h-4 w-4" /> Book a Session
+              </Button>
+            )}
+
+            {/* Leave a Review button — only shown if student has a completed unreviewed booking */}
+            {completedBooking && (
+              <Button
+                className="w-full"
+                variant="outline"
+                size="lg"
+                onClick={() => setReviewOpen(true)}
+              >
+                <Star className="h-4 w-4" /> Leave a Review
               </Button>
             )}
           </div>
@@ -458,6 +514,76 @@ export default function TutorProfilePage() {
                 onClick={handleBook}
               >
                 Confirm Booking
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* Review Modal */}
+      {reviewOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <Card className="w-full max-w-md p-6">
+            <h2 className="font-display text-xl font-bold text-slate-900 mb-1">
+              Leave a Review
+            </h2>
+            <p className="text-sm text-slate-500 font-body mb-5">for {name}</p>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Rating
+                </label>
+                <div className="flex gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() => setReviewRating(star)}
+                      className="transition-transform hover:scale-110"
+                    >
+                      <Star
+                        className={`h-8 w-8 transition-colors ${
+                          star <= reviewRating
+                            ? "text-amber-400 fill-amber-400"
+                            : "text-slate-200"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-400 font-body mt-1">
+                  {reviewRating === 1 && "Poor"}
+                  {reviewRating === 2 && "Fair"}
+                  {reviewRating === 3 && "Good"}
+                  {reviewRating === 4 && "Very good"}
+                  {reviewRating === 5 && "Excellent"}
+                </p>
+              </div>
+              <Textarea
+                label="Comment (optional)"
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                placeholder="Share your experience with this tutor..."
+                rows={4}
+              />
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button
+                variant="ghost"
+                className="flex-1"
+                onClick={() => {
+                  setReviewOpen(false);
+                  setReviewRating(5);
+                  setReviewComment("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="flex-1"
+                loading={submittingReview}
+                onClick={handleReview}
+              >
+                Submit Review
               </Button>
             </div>
           </Card>

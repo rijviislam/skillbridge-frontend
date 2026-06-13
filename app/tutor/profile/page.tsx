@@ -4,7 +4,7 @@ import { Avatar, Card, Select, Spinner, Textarea } from "@/components/ui";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { useAuth } from "@/context/AuthContext";
-import { tutorApi, tutorsApi } from "@/lib/api";
+import { tutorApi, tutorsApi, userApi } from "@/lib/api";
 import type { Category, TutorProfile } from "@/types";
 import {
   BookOpen,
@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function TutorProfilePage() {
-  const { user, refreshUser } = useAuth(); // ✅ pull refreshUser
+  const { user, refreshUser } = useAuth();
   const [profile, setProfile] = useState<Partial<TutorProfile>>({});
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,12 +71,18 @@ export default function TutorProfilePage() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      // Update tutor profile fields (bio, hourlyRate, etc.)
       await tutorApi.updateProfile({
         ...profile,
-        ...form,
         hourlyRate: profile.hourlyRate ? Number(profile.hourlyRate) : 0,
         experience: profile.experience ? Number(profile.experience) : 0,
         subjects: profile.subjects || [],
+      });
+
+      // Persist name/image to the User table
+      await userApi.updateProfile({
+        name: form.name,
+        image: form.image,
       });
 
       const currentUser = JSON.parse(localStorage.getItem("sb_user") || "{}");
