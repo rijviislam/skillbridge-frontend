@@ -31,6 +31,7 @@ export default function AvailabilityPage() {
   const [days, setDays] = useState<DaySlots[]>(defaultDaySlots());
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deletedSlotIds, setDeletedSlotIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     tutorApi
@@ -98,6 +99,16 @@ export default function AvailabilityPage() {
     setDays((prev) =>
       prev.map((d) => {
         if (d.dayOfWeek === dayOfWeek) {
+          const slotToRemove = d.slots[index];
+          // Track the deleted slot ID if it exists
+          if (slotToRemove.id) {
+            setDeletedSlotIds((prev) => {
+              const next = new Set(prev);
+              next.add(slotToRemove.id!);
+              return next;
+            });
+          }
+
           const newSlots = d.slots.filter((_, i) => i !== index);
           return {
             ...d,
@@ -131,36 +142,32 @@ export default function AvailabilityPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const enabledDays = days.filter((d) => d.isAvailable);
+      const toISO = (timeStr: string, dayOfWeek: number) => {
+        const now = new Date();
+        const diff = (dayOfWeek - now.getDay() + 7) % 7;
+        const date = new Date(now);
+        date.setDate(now.getDate() + diff);
+        const [hours, minutes] = timeStr.split(":").map(Number);
+        date.setHours(hours, minutes, 0, 0);
+        return date.toISOString();
+      };
 
-      for (const day of enabledDays) {
-        for (const slot of day.slots) {
-          const [startHour, startMin] = slot.startTime.split(":").map(Number);
-          const [endHour, endMin] = slot.endTime.split(":").map(Number);
+      const availabilitySlots = days
+        .filter((d) => d.isAvailable)
+        .flatMap((d) =>
+          d.slots.map((slot) => ({
+            startTime: toISO(slot.startTime, d.dayOfWeek),
+            endTime: toISO(slot.endTime, d.dayOfWeek),
+          })),
+        );
 
-          const now = new Date();
-          const currentDay = now.getDay();
-          const diff = day.dayOfWeek - currentDay;
+      // POST the full array directly
+      await tutorApi.updateAvailability(availabilitySlots);
 
-          const startTime = new Date(now);
-          startTime.setDate(now.getDate() + diff);
-          startTime.setHours(startHour, startMin, 0, 0);
-
-          const endTime = new Date(now);
-          endTime.setDate(now.getDate() + diff);
-          endTime.setHours(endHour, endMin, 0, 0);
-
-          if (!slot.id) {
-            await tutorApi.updateAvailability({
-              startTime: startTime.toISOString(),
-              endTime: endTime.toISOString(),
-            });
-          }
-        }
-      }
-
+      setDeletedSlotIds(new Set());
       toast.success("Availability saved!");
     } catch (err: any) {
+      console.error("Save error:", err.response?.data);
       toast.error(err.response?.data?.message || "Failed to save");
     } finally {
       setSaving(false);
@@ -177,7 +184,7 @@ export default function AvailabilityPage() {
   const enabledCount = days.filter((d) => d.isAvailable).length;
 
   return (
-    <div className="max-w-2xl">
+    <div className="max-w-2xl ">
       <div className="mb-6">
         <h1 className="font-display text-2xl font-bold text-slate-900">
           Availability

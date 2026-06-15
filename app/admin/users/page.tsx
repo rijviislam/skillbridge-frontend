@@ -80,8 +80,8 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Filters */}
-      <div className="flex gap-3 mb-6">
-        <div className="relative flex-1 max-w-xs">
+      <div className="flex gap-3 mb-6  justify-between items-center">
+        <div className="relative flex-2 w-lg w-1/2">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
             value={search}
@@ -90,17 +90,19 @@ export default function AdminUsersPage() {
             className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-body focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
         </div>
-        <Select
-          options={[
-            { value: "all", label: "All Roles" },
-            { value: "student", label: "Students" },
-            { value: "tutor", label: "Tutors" },
-            { value: "admin", label: "Admins" },
-          ]}
-          value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          className="w-36"
-        />
+        <div>
+          <Select
+            options={[
+              { value: "all", label: "All Roles" },
+              { value: "student", label: "Students" },
+              { value: "tutor", label: "Tutors" },
+              { value: "admin", label: "Admins" },
+            ]}
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            className="w-36"
+          />
+        </div>
       </div>
 
       <Card className="overflow-hidden">

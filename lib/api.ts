@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
 const api = axios.create({
   baseURL: API_BASE,
@@ -51,15 +51,7 @@ export const authApi = {
 
   me: () => api.get("/api/auth/get-session"),
 };
-
-// ─── Tutors (Public) ─────────────────────────────────────
-// export const tutorsApi = {
-//   getAll: (params?: Record<string, unknown>) =>
-//     api.get("/api/tutors", { params }),
-//   getById: (userId: string) => api.get(`/api/tutors/${userId}`),
-//   getCategories: () => api.get("/api/admin/categories"),
-// };
-
+//  TUTOR API
 export const tutorsApi = {
   getAll: (params?: Record<string, unknown>) =>
     api.get("/api/tutors", { params }),
@@ -74,6 +66,7 @@ export const bookingsApi = {
   getAll: (params?: Record<string, unknown>) =>
     api.get("/api/bookings", { params }),
   getById: (id: string) => api.get(`/api/bookings/${id}`),
+  getMyBookings: () => api.get("/api/bookings/my"), // ← add this
   cancel: (id: string) => api.patch(`/api/bookings/${id}/cancel`),
   complete: (id: string) => api.patch(`/api/bookings/${id}/complete`),
 };
@@ -91,6 +84,9 @@ export const tutorApi = {
     api.post("/api/tutors/availability", data),
   getSessions: (params?: Record<string, unknown>) =>
     api.get("/api/bookings", { params }),
+  deleteAvailability: (availabilityId: string) => {
+    return api.delete(`/tutors/availability/${availabilityId}`);
+  },
 };
 
 // ─── Reviews ─────────────────────────────────────────────

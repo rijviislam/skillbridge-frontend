@@ -105,6 +105,8 @@ function BrowseTutorsContent() {
     filters.maxPrice ||
     filters.minRating;
 
+  console.log("USER TUTOR :", tutors);
+
   return (
     <div className="min-h-screen bg-slate-50 ">
       <Navbar />

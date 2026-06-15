@@ -21,6 +21,8 @@ export default function StudentDashboardPage() {
   const { user } = useAuth();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+
+  console.log("BOOKING", bookings);
   useEffect(() => {
     load();
   }, []);
@@ -161,21 +163,29 @@ export default function StudentDashboardPage() {
           </div>
         ) : (
           <div className="space-y-3">
-            {recentBookings.map((b) => (
+            {recentBookings.map((b: any) => (
               <div
                 key={b.id}
                 className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors"
               >
-                <Avatar name={b.tutor?.user?.name || "T"} size="sm" />
+                <Avatar
+                  name={b.tutor?.name || "Tutor"}
+                  src={b.tutor?.image}
+                  size="sm"
+                />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-slate-800 font-body truncate">
-                    {b.tutor?.user?.name || "Tutor"}
+                    {b.tutor?.name || "Tutor"}
                   </p>
                   <p className="text-xs text-slate-500 font-body">
-                    {b.subject} · {formatDate(b.scheduledDate)}
+                    {b.availability
+                      ? formatDate(b.availability.startTime)
+                      : formatDate(b.createdAt)}
                   </p>
                 </div>
-                <StatusBadge status={b.status} />
+                <StatusBadge
+                  status={b.status === "CONFIRMED" ? "PENDING" : b.status}
+                />
               </div>
             ))}
           </div>
