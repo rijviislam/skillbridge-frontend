@@ -66,14 +66,11 @@ export default function LoginPage() {
           </blockquote>
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-brand-500 flex items-center justify-center font-display font-bold text-white">
-              A
+              R
             </div>
             <div>
               <p className="text-white font-body text-sm font-medium">
-                Alex Johnson
-              </p>
-              <p className="text-slate-400 font-body text-xs">
-                Computer Science Student
+                Rijvi Islam
               </p>
             </div>
           </div>

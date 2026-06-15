@@ -35,6 +35,7 @@ export const authApi = {
         name: data.name,
         email: data.email,
         password: data.password,
+        role: data.role,
       });
       return res;
     } catch (err: any) {
@@ -66,7 +67,7 @@ export const bookingsApi = {
   getAll: (params?: Record<string, unknown>) =>
     api.get("/api/bookings", { params }),
   getById: (id: string) => api.get(`/api/bookings/${id}`),
-  getMyBookings: () => api.get("/api/bookings/my"), // ← add this
+  getMyBookings: () => api.get("/api/bookings/my"),
   cancel: (id: string) => api.patch(`/api/bookings/${id}/cancel`),
   complete: (id: string) => api.patch(`/api/bookings/${id}/complete`),
 };
