@@ -62,7 +62,7 @@ export default function LoginPage() {
 
         <div className="relative z-10">
           <blockquote className="font-display text-2xl text-white font-semibold leading-snug mb-4">
-            "SkillBridge helped me ace my exams. My tutor was incredible."
+            "EduCore helped me ace my exams. My tutor was incredible."
           </blockquote>
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-brand-500 flex items-center justify-center font-display font-bold text-white">

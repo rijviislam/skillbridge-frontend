@@ -44,7 +44,7 @@ function RegisterContent() {
     setLoading(true);
     try {
       await register(form.name, form.email, form.password, form.role);
-      toast.success("Account created! Welcome to SkillBridge 🎉");
+      toast.success("Account created! Welcome to EduCore 🎉");
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Registration failed");
     } finally {

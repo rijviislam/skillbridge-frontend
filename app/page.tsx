@@ -225,7 +225,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-12">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-slate-900 mb-3">
-            How SkillBridge Works
+            How EduCore Works
           </h2>
           <p className="text-slate-500 font-body max-w-md mx-auto">
             Get started in minutes and begin learning today
@@ -284,7 +284,7 @@ export default function HomePage() {
             Ready to start learning?
           </h2>
           <p className="text-slate-400 font-body mb-8 text-lg">
-            Join thousands of students already learning with SkillBridge tutors.
+            Join thousands of students already learning with EduCore tutors.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/register">
@@ -298,7 +298,7 @@ export default function HomePage() {
                 size="lg"
                 className="min-w-[180px] border-slate-600 text-slate-300 hover:bg-slate-800 hover:border-slate-500"
               >
-                Teach on SkillBridge
+                Teach on EduCore
               </Button>
             </Link>
           </div>
