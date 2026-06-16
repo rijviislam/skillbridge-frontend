@@ -40,8 +40,6 @@ export default function StudentProfilePage() {
     }
   };
 
-  console.log("IMAGE :", form.image);
-
   return (
     <div className="max-w-2xl">
       <div className="mb-6">

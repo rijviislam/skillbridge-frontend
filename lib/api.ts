@@ -40,7 +40,7 @@ export const authApi = {
       });
       return res;
     } catch (err: any) {
-      console.log("Register error:", err.response?.data);
+      // console.log("Register error:", err.response?.data);
       throw err;
     }
   },

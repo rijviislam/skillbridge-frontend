@@ -69,7 +69,9 @@ export default function AvailabilityPage() {
           );
         }
       })
-      .catch((err) => console.log("Error:", err))
+      .catch((err) => {
+        throw err;
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -167,7 +169,6 @@ export default function AvailabilityPage() {
       setDeletedSlotIds(new Set());
       toast.success("Availability saved!");
     } catch (err: any) {
-      console.error("Save error:", err.response?.data);
       toast.error(err.response?.data?.message || "Failed to save");
     } finally {
       setSaving(false);
