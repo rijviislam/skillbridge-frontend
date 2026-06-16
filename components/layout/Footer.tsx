@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { BookOpen } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -16,32 +16,74 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm font-body leading-relaxed max-w-xs">
-              Connect with expert tutors and accelerate your learning journey. Any subject, any level.
+              Connect with expert tutors and accelerate your learning journey.
+              Any subject, any level.
             </p>
           </div>
 
           <div>
-            <h4 className="text-white font-display font-semibold mb-4">Platform</h4>
+            <h4 className="text-white font-display font-semibold mb-4">
+              Platform
+            </h4>
             <ul className="space-y-2 text-sm font-body">
-              <li><Link href="/tutors" className="hover:text-white transition-colors">Browse Tutors</Link></li>
-              <li><Link href="/auth/register" className="hover:text-white transition-colors">Become a Tutor</Link></li>
-              <li><Link href="/auth/login" className="hover:text-white transition-colors">Sign In</Link></li>
+              <li>
+                <Link
+                  href="/tutors"
+                  className="hover:text-white transition-colors"
+                >
+                  Browse Tutors
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/auth/register"
+                  className="hover:text-white transition-colors"
+                >
+                  Become a Tutor
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/auth/login"
+                  className="hover:text-white transition-colors"
+                >
+                  Sign In
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-display font-semibold mb-4">Support</h4>
+            <h4 className="text-white font-display font-semibold mb-4">
+              Support
+            </h4>
             <ul className="space-y-2 text-sm font-body">
-              <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+              <li>
+                <a href="#" className="hover:text-white transition-colors">
+                  Help Center
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-white transition-colors">
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-white transition-colors">
+                  Terms of Service
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-slate-800 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-xs font-body">© 2025 SkillBridge. All rights reserved.</p>
-          <p className="text-xs font-body">Made with ❤️ for learners everywhere</p>
+          <p className="text-xs font-body">
+            © 2025 EduCore. All rights reserved.
+          </p>
+          <p className="text-xs font-body">
+            Made with ❤️ for learners everywhere
+          </p>
         </div>
       </div>
     </footer>

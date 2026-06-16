@@ -56,13 +56,13 @@ export default function LoginPage() {
             <BookOpen className="h-5 w-5 text-white" />
           </div>
           <span className="font-display font-bold text-white text-xl">
-            Skill<span className="text-brand-400">Bridge</span>
+            Edu<span className="text-brand-400">Core</span>
           </span>
         </Link>
 
         <div className="relative z-10">
           <blockquote className="font-display text-2xl text-white font-semibold leading-snug mb-4">
-            "SkillBridge helped me ace my exams. My tutor was incredible."
+            "EduCore helped me ace my exams. My tutor was incredible."
           </blockquote>
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-brand-500 flex items-center justify-center font-display font-bold text-white">

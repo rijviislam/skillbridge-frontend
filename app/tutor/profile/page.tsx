@@ -117,7 +117,7 @@ export default function TutorProfilePage() {
           Tutor Profile
         </h1>
         <p className="text-slate-500 font-body text-sm mt-0.5">
-          How students see you on SkillBridge
+          How students see you on EduCore
         </p>
       </div>
 
