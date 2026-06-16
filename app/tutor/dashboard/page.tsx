@@ -24,7 +24,6 @@ function ReviewsSection({ tutorId }: { tutorId?: string }) {
       .getForTutor(tutorId)
       .then((r) => {
         const list = r.data?.data || r.data || [];
-        console.log("RAW reviews response:", r.data);
         setReviews(Array.isArray(list) ? list : []);
       })
       .catch(() => setReviews([]))
@@ -35,8 +34,6 @@ function ReviewsSection({ tutorId }: { tutorId?: string }) {
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : 0;
-
-  console.log("REVIEW", reviews);
 
   return (
     <Card className="p-5 mt-6">
@@ -135,7 +132,6 @@ export default function TutorDashboardPage() {
       .getSessions({ limit: 20 })
       .then((r) => {
         const data = r.data?.data;
-        console.log("RAW sessions response:", r.data);
         let all = [];
         if (data?.upcoming || data?.past) {
           all = [...(data.upcoming || []), ...(data.past || [])];
@@ -188,8 +184,6 @@ export default function TutorDashboardPage() {
 
   const getStudentName = (s: any) =>
     s.student?.name || s.student?.user?.name || "Student";
-
-  console.log(sessions);
 
   return (
     <div>

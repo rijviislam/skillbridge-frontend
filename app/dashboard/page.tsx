@@ -22,7 +22,6 @@ export default function StudentDashboardPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 
-  console.log("BOOKING", bookings);
   useEffect(() => {
     load();
   }, []);
@@ -59,7 +58,6 @@ export default function StudentDashboardPage() {
   };
 
   const recentBookings = bookings.slice(0, 5);
-  console.log("first", bookings.length);
   return (
     <div>
       <div className="mb-8 ">

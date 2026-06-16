@@ -100,8 +100,6 @@ export default function BookingsPage() {
   const getTutorName = (b: any) =>
     b.tutor?.name || b.tutor?.user?.name || "Tutor";
 
-  console.log("BOOKING", bookings);
-
   return (
     <div>
       <div className="flex items-center justify-between mb-6">

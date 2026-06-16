@@ -141,8 +141,6 @@ export default function TutorProfilePage() {
     }
   };
 
-  console.log("REVIEWS", reviews);
-
   if (loading)
     return (
       <div className="min-h-screen bg-slate-50">

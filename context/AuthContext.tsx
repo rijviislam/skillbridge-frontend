@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setToken(savedToken);
       setUser(savedUser);
     } catch (err) {
-      console.log("loadUser error:", err);
+      throw new Error(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
     }
@@ -62,31 +62,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     const response = await authApi.login({ email, password });
 
-    console.log("=== FULL LOGIN RESPONSE ===");
-    console.log("status:", response.status);
-    console.log("data:", JSON.stringify(response.data, null, 2));
-
     const rawToken = response.data?.token;
     const rawUser = response.data?.user;
 
-    console.log("rawToken:", rawToken);
-    console.log("rawUser:", rawUser);
-
     if (!rawToken || !rawUser) {
-      console.log("NO TOKEN OR USER - throwing error");
       throw new Error("Login failed");
     }
 
-    console.log("Setting localStorage...");
     localStorage.setItem("sb_token", rawToken);
     localStorage.setItem("sb_user", JSON.stringify(rawUser));
 
-    console.log("After setItem - token:", localStorage.getItem("sb_token"));
-
     setToken(rawToken);
     setUser(rawUser);
-
-    console.log("Login complete!");
   };
 
   const register = async (
