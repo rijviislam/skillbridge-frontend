@@ -11,8 +11,6 @@ interface TutorCardProps {
 export default function TutorCard({ tutor }: TutorCardProps) {
   const name = tutor.user?.name || "Tutor";
 
-  console.log("TTT", tutor.user?.image, tutor.rating);
-
   return (
     <Link href={`/tutors/${tutor.userId}`}>
       <Card className="group hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 overflow-hidden h-full">

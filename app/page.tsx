@@ -287,12 +287,12 @@ export default function HomePage() {
             Join thousands of students already learning with EduCore tutors.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/register">
+            <Link href="/tutors">
               <Button size="lg" className="min-w-[180px]">
                 Find a Tutor
               </Button>
             </Link>
-            <Link href="/auth/register?role=tutor">
+            <Link href="/tutors">
               <Button
                 variant="outline"
                 size="lg"

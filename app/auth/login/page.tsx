@@ -56,7 +56,7 @@ export default function LoginPage() {
             <BookOpen className="h-5 w-5 text-white" />
           </div>
           <span className="font-display font-bold text-white text-xl">
-            Skill<span className="text-brand-400">Bridge</span>
+            Edu<span className="text-brand-400">Core</span>
           </span>
         </Link>
 

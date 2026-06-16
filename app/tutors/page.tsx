@@ -59,11 +59,19 @@ function BrowseTutorsContent() {
 
       const res = await tutorsApi.getAll(params);
 
+      // Backend returns: { success: true, data: { data: [...], total: N } }
       const payload = res.data?.data;
       const tutorList = Array.isArray(payload)
         ? payload
-        : (payload?.data ?? []);
-      const totalCount = payload?.total ?? 0;
+        : Array.isArray(payload?.data)
+          ? payload.data
+          : [];
+      const totalCount =
+        typeof payload?.total === "number"
+          ? payload.total
+          : typeof res.data?.total === "number"
+            ? res.data.total
+            : 0;
 
       setTutors(tutorList);
       setTotal(totalCount);
