@@ -136,7 +136,7 @@ function BrowseTutorsContent() {
             <input
               value={searchInput}
               onChange={handleSearchChange}
-              placeholder="Search subjects, tutor names..."
+              placeholder="Search Tutor names..."
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm font-body focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
           </div>
