@@ -103,7 +103,7 @@ export default function BookingsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <div>
+        <div className=" min-w-40">
           <h1 className="font-display text-2xl font-bold text-slate-900">
             My Bookings
           </h1>
@@ -111,17 +111,19 @@ export default function BookingsPage() {
             {bookings.length} sessions
           </p>
         </div>
-        <Select
-          options={[
-            { value: "all", label: "All Sessions" },
-            { value: "confirmed", label: "Upcoming" },
-            { value: "completed", label: "Completed" },
-            { value: "cancelled", label: "Cancelled" },
-          ]}
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="w-40"
-        />
+        <div>
+          <Select
+            options={[
+              { value: "all", label: "All Sessions" },
+              { value: "confirmed", label: "Upcoming" },
+              { value: "completed", label: "Completed" },
+              { value: "cancelled", label: "Cancelled" },
+            ]}
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="w-40"
+          />
+        </div>
       </div>
 
       {loading ? (

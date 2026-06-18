@@ -2,14 +2,8 @@
 
 import { Card, Spinner } from "@/components/ui";
 import { adminApi } from "@/lib/api";
-import { formatCurrency, formatDate } from "@/lib/utils";
-import {
-  Activity,
-  BookOpen,
-  DollarSign,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { formatDate } from "@/lib/utils";
+import { Activity, BookOpen, Users } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -52,23 +46,23 @@ export default function AdminDashboardPage() {
       bg: "bg-brand-50",
       href: "/admin/bookings",
     },
-    {
-      label: "Total Revenue",
-      value:
-        stats.totalRevenue != null ? formatCurrency(stats.totalRevenue) : "—",
-      icon: <DollarSign className="h-5 w-5" />,
-      color: "text-green-500",
-      bg: "bg-green-50",
-      href: "#",
-    },
-    {
-      label: "Active Tutors",
-      value: stats.activeTutors ?? "—",
-      icon: <TrendingUp className="h-5 w-5" />,
-      color: "text-purple-500",
-      bg: "bg-purple-50",
-      href: "/admin/users",
-    },
+    // {
+    //   label: "Total Revenue",
+    //   value:
+    //     stats.totalRevenue != null ? formatCurrency(stats.totalRevenue) : "—",
+    //   icon: <DollarSign className="h-5 w-5" />,
+    //   color: "text-green-500",
+    //   bg: "bg-green-50",
+    //   href: "#",
+    // },
+    // {
+    //   label: "Active Tutors",
+    //   value: stats.activeTutors ?? "—",
+    //   icon: <TrendingUp className="h-5 w-5" />,
+    //   color: "text-purple-500",
+    //   bg: "bg-purple-50",
+    //   href: "/admin/users",
+    // },
   ];
 
   return (

@@ -72,7 +72,8 @@ function BrowseTutorsContent() {
           : typeof res.data?.total === "number"
             ? res.data.total
             : 0;
-
+      console.log("Filters:", filters);
+      console.log("Params:", params);
       setTutors(tutorList);
       setTotal(totalCount);
     } catch {
@@ -129,13 +130,13 @@ function BrowseTutorsContent() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <div className="relative flex-1  min-w-80">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4  text-slate-400 " />
 
             <input
               value={searchInput}
               onChange={handleSearchChange}
-              placeholder="Search subjects, tutor names..."
+              placeholder="Search Tutor names..."
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-sm font-body focus:outline-none focus:ring-2 focus:ring-brand-400"
             />
           </div>
